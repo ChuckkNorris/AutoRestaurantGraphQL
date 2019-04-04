@@ -52,11 +52,26 @@ namespace AutoRestaurant.Api.Modules.GraphQL {
     public class MenuQuery : ObjectGraphType, ISingleton {
         public MenuQuery(MenuRepository menuRepo) {
             Field<MenuType>("menu",
-                arguments: new QueryArguments(new QueryArgument<IntGraphType> { Name = "menuId" }),
-                resolve: context => menuRepo.GetMenu(context.GetArgument<int>("menuId"))
+                arguments: new QueryArguments(
+                    new QueryArgument<IntGraphType> { Name = "menuId" }
+                ),
+                resolve: context => {
+                    return menuRepo.GetMenu(context.GetArgument<int>("menuId"));
+                }
             );
             Field<ListGraphType<MenuType>>("menus",
                 resolve: context => menuRepo.GetAllMenus()
+            );
+            Field<ListGraphType<MenuType>>("searchMenus",
+                arguments: new QueryArguments(
+                    new QueryArgument<StringGraphType> { Name = "name" },
+                    new QueryArgument<StringGraphType> { Name = "title" }
+                ),
+                resolve: context => {
+                    var name = context.GetArgument<string>("name");
+                    var title = context.GetArgument<string>("title");
+                    return menuRepo.SearchMenus(name, title);
+                }
             );
         }
     }

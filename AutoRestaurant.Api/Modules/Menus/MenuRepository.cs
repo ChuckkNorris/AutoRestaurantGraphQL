@@ -49,5 +49,15 @@ namespace AutoRestaurant.Api.Modules.Menus {
                 .Where(mi => mi.MenuId == menuId)
                 .ToListAsync();
         }
+        public async Task<IEnumerable<Menu>> SearchMenus(string menuName, string menuItemTitle) {
+            var toReturn = await _context.Menus
+                .Include(menu => menu.MenuItems)
+                .Where(menu => menu.Name.Contains(menuName)
+                    || menu.MenuItems.Any(mi => mi.Title.Contains(menuItemTitle))
+                )
+                .ToListAsync();
+            return toReturn;
+        }
+
     }
 }
