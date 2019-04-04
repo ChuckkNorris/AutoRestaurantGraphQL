@@ -64,13 +64,11 @@ namespace AutoRestaurant.Api.Modules.GraphQL {
             );
             Field<ListGraphType<MenuType>>("searchMenus",
                 arguments: new QueryArguments(
-                    new QueryArgument<StringGraphType> { Name = "name" },
-                    new QueryArgument<StringGraphType> { Name = "title" }
+                    new QueryArgument<MenuInputType> { Name = "menu" }
                 ),
                 resolve: context => {
-                    var name = context.GetArgument<string>("name");
-                    var title = context.GetArgument<string>("title");
-                    return menuRepo.SearchMenus(name, title);
+                    var menu = context.GetArgument<Menu>("menu");
+                    return menuRepo.SearchMenus(menu.Name, menu.MenuItems?.FirstOrDefault().Title);
                 }
             );
         }
